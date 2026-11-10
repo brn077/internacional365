@@ -19,7 +19,9 @@ body{display:flex;align-items:center;justify-content:center}
 @media(min-aspect-ratio:9/16){body{background:radial-gradient(ellipse at center,#102b23 0%,#020e0b 72%)}}
 /* Foto tratada como hero principal: rosto e celular permanecem no primeiro plano */
 .hero-photo{position:absolute;inset:0; height:88%;z-index:-2;overflow:hidden;background:#17231d}
-.hero-photo img{width:100%;height:100%;display:block;object-fit:contain;object-position:50% 5%;filter:saturate(1.06) contrast(1.03) brightness(1);transform:scale(.98)}
+.hero-photo img{width:100%;height:100%;display:block;object-fit:contain;object-position:50% 5%;filter:saturate(1.06) contrast(1.03) brightness(1);transform:scale(.98);transform-origin:50% 42%;animation:portraitBreath 4.8s ease-in-out infinite alternate;will-change:transform}
+@keyframes portraitBreath{0%{transform:scale(1.015)}100%{transform:scale(1.085)}}
+@media(prefers-reduced-motion:reduce){.hero-photo img{animation:none;transform:scale(1)}}
 .photo-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,12,9,.10) 0%,rgba(0,12,9,0) 39%,rgba(1,18,13,.10) 65%,#041b15 100%),linear-gradient(90deg,rgba(0,15,10,.05),transparent 48%,rgba(0,10,8,.03))}
 /* Identidade */
 .topbar{position:absolute;z-index:3;top:0;left:0;right:0;height:calc(var(--u)*12);display:flex;align-items:center;justify-content:space-between;padding:0 calc(var(--u)*5);background:linear-gradient(180deg,rgba(1,15,11,.92),rgba(1,15,11,.62));border-bottom:1px solid rgba(255,255,255,.12);backdrop-filter:blur(12px)}
