@@ -48,6 +48,15 @@ body{display:flex;align-items:center;justify-content:center}
 .cta:focus-visible{outline:2px solid #fff;outline-offset:4px}
 @keyframes ctaShine{0%,18%{left:-48%;opacity:0}30%{opacity:.9}52%,100%{left:125%;opacity:0}}
 @keyframes ctaGlow{0%,100%{box-shadow:0 0 0 1px rgba(72,237,187,.12),0 9px 25px rgba(30,225,163,.30),0 0 24px rgba(30,225,163,.16),inset 0 1px rgba(255,255,255,.85),inset 0 -3px 0 rgba(0,91,61,.12)}50%{box-shadow:0 0 0 2px rgba(72,237,187,.18),0 10px 30px rgba(30,225,163,.42),0 0 38px rgba(30,225,163,.25),inset 0 1px rgba(255,255,255,.9),inset 0 -3px 0 rgba(0,91,61,.12)}}
+
+/* Temporizador discreto, alinhado à identidade da página */
+.countdown{margin:calc(var(--u)*1.4) auto calc(var(--u)*1.8);padding:calc(var(--u)*1.6) calc(var(--u)*2.2);max-width:calc(var(--u)*68);border:1px solid rgba(255,255,255,.12);border-radius:calc(var(--u)*1.4);background:rgba(2,19,14,.68);box-shadow:none}
+.countdown-title{font-size:calc(var(--u)*2.45);font-weight:650;letter-spacing:.015em;text-transform:none;color:#cddbd3}
+.countdown-clock{display:flex;align-items:center;justify-content:center;gap:calc(var(--u)*1.15);margin:calc(var(--u)*.6) 0 calc(var(--u)*.35);font-family:'Barlow Condensed',Impact,sans-serif;font-size:calc(var(--u)*7.8);font-weight:700;line-height:1;color:#eef8f1;font-variant-numeric:tabular-nums}
+.countdown-clock .colon{color:#82b8a2}
+.countdown-note{font-size:calc(var(--u)*1.95);line-height:1.3;font-weight:450;color:#a0b5a8}
+.countdown.expired .countdown-title{color:#cddbd3}
+
 /* Faixa de informação e rodapé */
 .risk{position:absolute;z-index:2;left:calc(var(--u)*5);right:calc(var(--u)*5);bottom:calc(var(--u)*19);padding:calc(var(--u)*2.2) calc(var(--u)*3);border-left:calc(var(--u)*.8) solid var(--gold);background:rgba(1,16,12,.82);color:#d8e3dc;font-size:calc(var(--u)*2.25);line-height:1.38;text-align:center;backdrop-filter:blur(8px)}
 footer{position:absolute;z-index:4;left:0;right:0;bottom:0;min-height:calc(var(--u)*18);padding:calc(var(--u)*2.3) calc(var(--u)*4) calc(var(--u)*2);background:rgba(1,14,10,.97);border-top:1px solid rgba(255,255,255,.13)}
@@ -76,6 +85,11 @@ footer{position:absolute;z-index:4;left:0;right:0;bottom:0;min-height:calc(var(-
   <div class="kicker">Bônus de 100% no depósito</div>
   <h1>Bônus de<strong>100%</strong></h1>
   <p class="tagline">Seu primeiro passo merece <em>uma recepção especial.</em></p>
+  <div class="countdown" id="countdown" role="timer" aria-label="Tempo restante do contador">
+   <div class="countdown-title">Condições de hoje válidas até 23h59</div>
+   <div class="countdown-clock" aria-live="off"><span id="count-h">--</span><span class="colon">:</span><span id="count-m">--</span><span class="colon">:</span><span id="count-s">--</span></div>
+   <div class="countdown-note" id="count-note">Horário de Brasília</div>
+  </div>
   <a class="cta" href="https://365internacional.vip/r/6VZRA7" target="_blank" rel="noopener noreferrer" aria-label="Acessar a plataforma 365 Internacional">ACESSAR AGORA</a>
  </main>
  <p class="risk">A participação envolve risco de perdas financeiras. Bônus limitado a R$ 10. Confira as regras, condições e informações legais antes de participar.</p>
@@ -86,6 +100,23 @@ footer{position:absolute;z-index:4;left:0;right:0;bottom:0;min-height:calc(var(-
  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div class="panel"><button class="close" aria-label="Fechar">×</button><h2 id="modal-title">Informações</h2><div id="modal-content"></div></div></div>
 </div>
 <script>
+
+// Contador diário: sempre chega à meia-noite no horário de Brasília (UTC−03:00).
+// Não depende de localStorage nem reinicia ao atualizar a página.
+const pad2 = number => String(number).padStart(2, '0');
+function updateCountdown() {
+  const now = Date.now();
+  const brazilTime = now - 3 * 60 * 60 * 1000;
+  const dayMs = 24 * 60 * 60 * 1000;
+  const elapsedTodayMs = ((brazilTime % dayMs) + dayMs) % dayMs;
+  const remainingSeconds = Math.max(0, Math.ceil((dayMs - elapsedTodayMs) / 1000));
+  document.getElementById('count-h').textContent = pad2(Math.floor(remainingSeconds / 3600));
+  document.getElementById('count-m').textContent = pad2(Math.floor((remainingSeconds % 3600) / 60));
+  document.getElementById('count-s').textContent = pad2(remainingSeconds % 60);
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
 const content = {
  sobre: ["Sobre a 365 Internacional", "<p>A 365 Internacional reúne uma experiência ligada ao universo esportivo, com informações sobre eventos, confrontos, palpites e resultados.</p><p><strong>Importante:</strong> esta experiência envolve palpites esportivos com participação financeira. A participação pode resultar em perdas financeiras e é destinada exclusivamente a maiores de 18 anos.</p><p>Antes de disponibilizar a operação ao público, informe aqui a razão social, o CNPJ, os canais oficiais e os dados verificáveis da autorização aplicável.</p>"],
  informacoes: ["Informações da operação", "<p><span class='placeholder'>Operadora responsável:</span> [informar razão social registrada].</p><p><span class='placeholder'>CNPJ:</span> [informar dado válido].</p><p><span class='placeholder'>Autorização:</span> [informar número e identificação oficial, quando aplicável].</p><p><span class='placeholder'>Endereço e canais:</span> [informar dados verificáveis de atendimento].</p>"],
